@@ -3,7 +3,7 @@
 apiVersion: v1
 kind: Namespace
 metadata:
-  name: opsani-monitoring
+  name: prometheus
 ---
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRoleBinding
@@ -16,7 +16,7 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: prometheus-k8s
-  namespace: opsani-monitoring
+  namespace: prometheus
 ---
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRole
@@ -42,7 +42,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: prometheus-k8s
-  namespace: opsani-monitoring
+  namespace: prometheus
 ---
 apiVersion: v1
 data:
@@ -59,7 +59,7 @@ kind: ConfigMap
 metadata:
   creationTimestamp: null
   name: prometheus-rules
-  namespace: opsani-monitoring
+  namespace: prometheus
 ---
 apiVersion: v1
 data:
@@ -176,13 +176,13 @@ kind: ConfigMap
 metadata:
   creationTimestamp: null
   name: prometheus-core
-  namespace: opsani-monitoring
+  namespace: prometheus
 ---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: prometheus-core
-  namespace: opsani-monitoring
+  namespace: prometheus
   labels:
     app: prometheus
     component: core
@@ -235,7 +235,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: kube-state-metrics
-  namespace: opsani-monitoring
+  namespace: prometheus
 spec:
   replicas: 1
   selector:
@@ -264,7 +264,7 @@ roleRef:
 subjects:
 - kind: ServiceAccount
   name: kube-state-metrics
-  namespace: opsani-monitoring
+  namespace: prometheus
 ---
 apiVersion: rbac.authorization.k8s.io/v1beta1
 kind: ClusterRole
@@ -291,7 +291,7 @@ apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: kube-state-metrics
-  namespace: opsani-monitoring
+  namespace: prometheus
 ---
 apiVersion: v1
 kind: Service
@@ -299,7 +299,7 @@ metadata:
   annotations:
     prometheus.io/scrape: 'true'
   name: kube-state-metrics
-  namespace: opsani-monitoring
+  namespace: prometheus
   labels:
     app: kube-state-metrics
 spec:
@@ -314,14 +314,13 @@ apiVersion: v1
 kind: Service
 metadata:
   name: prometheus
-  namespace: opsani-monitoring
+  namespace: prometheus
   labels:
     app: prometheus
     component: core
   annotations:
     prometheus.io/scrape: 'true'
 spec:
-  type: NodePort
   ports:
     - port: 9090
       protocol: TCP
